@@ -6,7 +6,11 @@
 
 ## Project description
 
-The project contains some entities and their relations. There is a login form and after successful login, you'll land on a page with some statistics.
+The project contains 
+- Entities and their associations. 
+- Login form and after successful login, you'll land on a page with some statistics.
+- Edit profile form.
+
 
 ## Project setup
 1. Run the project with the docker setup. (Thank you Kévin Dunglas https://github.com/dunglas)
