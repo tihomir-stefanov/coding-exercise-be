@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div>
+    <h1>Dashboard page</h1>
+    <hr>
+
+    <h4>Total appointments: {{ user.student.appointments.count }}</h4>
+    <hr>
+
+    <h3>My appointments</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Lesson</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for appointment in appointments %}
+            <tr>
+                <td>{{ appointment.klass.lesson.title }}</td>
+                <td>{{ appointment.klass.startDate|date('Y-m-d H:i') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h3>Award</h3>
+    {{ award.text }}
+</div>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div>
+    <h1>Edit page</h1>
+
+    Total appointments: {{ user.student.appointments.count }}
+
+    <hr>
+    {{ form(form) }}
+</div>
+
+{% endblock %}
