@@ -2,64 +2,68 @@
 
 namespace App\Controller;
 
+use App\Entity\Award;
 use App\Form\UserFormType;
-use App\Repository\AppointmentRepository;
 use App\Repository\AwardRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserController extends AbstractController
 {
-    #[Route('/dashboard/{id}', name: 'app_dashboard')]
-    public function index(
-        UserRepository $userRepository,
-        AppointmentRepository $appointmentRepository,
-        AwardRepository $awardRepository,
-        int $id
-    ): Response
-    {
-        $user = $userRepository->findOneById($id);
-        $award = $awardRepository->findOneByLevel($user->getStudent()->getLevel());
 
-        $appointments = $appointmentRepository->createQueryBuilder('a')
-            ->join('a.student', 's')
-            ->join('s.user', 'u')
-            ->andWhere('s.user = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
+    #[Route('/dashboard', name: 'app_dashboard', methods: ['GET'])]
+    public function index(AwardRepository $awardRepository, UserInterface $user): Response
+    {
+        //TODO: we could have one object for user and student since it is the same person (ont to one in entity)
+        /** @var null|Award $award */
+        $award = $awardRepository->findOneByLevel($user->getStudent()->getLevel());
 
         return $this->render('dashboard.html.twig', [
             'user' => $user,
-            'appointments' => $appointments,
             'award' => $award,
         ]);
     }
 
-    #[Route('/edit/{id}', name: 'app_edit')]
+    #[Route('/user', name: 'app_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
-        UserRepository $userRepository,
+        UserInterface $user,
         EntityManagerInterface $entityManager,
-        int $id
+        UserPasswordHasherInterface $passwordHasher
     ): Response
     {
-        $user = $userRepository->findOneById($id);
-
         $form = $this->createForm(UserFormType::class, $user);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $form->getData();
-            $entityManager->flush();
 
-            return $this->redirectToRoute('app_dashboard', ['id' => $user->getId()]);
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $user = $form->getData();
+
+                $plainPassword =  $form->get('plainPassword')->getData();
+
+                if($plainPassword) {
+                    $hashedPassword = $passwordHasher->hashPassword(
+                        $user,
+                        $plainPassword
+                    );
+                    $user->setPassword($hashedPassword);
+                }
+
+                $entityManager->persist($user);
+                $entityManager->flush();
+                $this->addFlash(
+                    'success',
+                    'Your changes were saved!'
+                );
+                return $this->redirectToRoute('app_dashboard');
+            }
         }
-
-        return $this->render('edit.html.twig', [
+        return $this->render('user/edit.html.twig', [
             'form' => $form,
             'user' => $user,
         ]);

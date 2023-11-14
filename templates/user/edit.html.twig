@@ -2,12 +2,12 @@
 
 {% block body %}
 <div>
-    <h1>Edit page</h1>
+    <h1>Edit User</h1>
 
     Total appointments: {{ user.student.appointments.count }}
 
     <hr>
-    {{ form(form) }}
+    {{ include('user/_form.html.twig') }}
 </div>
 
 {% endblock %}

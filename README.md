@@ -67,3 +67,16 @@ Symfony Docker is available under the MIT License.
 ## Credits
 
 Created by [Kévin Dunglas](https://dunglas.fr), co-maintained by [Maxime Helias](https://twitter.com/maxhelias) and sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
+
+
+Tests:
+1. Login in to bash `docker compose exec php sh`
+2. Create test database and load fixtures
+    `php bin/console d:d:c --env=test`
+    `php bin/console d:s:u --env=test --force`
+    `php bin/console d:f:l --env=test --no-interaction`
+3. Run tests `php bin/phpunit tests/`
+
+TODO:
+1. Join student and user - i know the context but i dont see the point of having two objects. 
+2. If we assume that this is a complete application clean up could be done , removing not used methods etc. 

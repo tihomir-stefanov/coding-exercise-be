@@ -4,6 +4,11 @@
 <div>
     <h1>Dashboard page</h1>
     <hr>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
 
     <h4>Total appointments: {{ user.student.appointments.count }}</h4>
     <hr>
@@ -17,7 +22,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for appointment in appointments %}
+        {% for appointment in  user.student.appointments %}
             <tr>
                 <td>{{ appointment.klass.lesson.title }}</td>
                 <td>{{ appointment.klass.startDate|date('Y-m-d H:i') }}</td>
@@ -28,8 +33,10 @@
 
     <hr>
 
-    <h3>Award</h3>
-    {{ award.text }}
+    {% if award %}
+            <h3>Award</h3>
+            {{ award.text }}
+    {% endif %}
 </div>
 
 {% endblock %}
