@@ -19,7 +19,6 @@ class UserController extends AbstractController
     #[Route('/dashboard', name: 'app_dashboard', methods: ['GET'])]
     public function index(AwardRepository $awardRepository, UserInterface $user): Response
     {
-        //TODO: we could have one object for user and student since it is the same person (ont to one in entity)
         /** @var null|Award $award */
         $award = $awardRepository->findOneByLevel($user->getStudent()->getLevel());
 
@@ -44,6 +43,7 @@ class UserController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 $user = $form->getData();
 
+                /** @var string $plainPassword */
                 $plainPassword =  $form->get('plainPassword')->getData();
 
                 if($plainPassword) {

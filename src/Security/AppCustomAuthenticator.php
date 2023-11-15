@@ -18,7 +18,6 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 {
-    //TODO: do we need this class ? use build in symfony authenticator
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'app_login';
@@ -29,15 +28,14 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $email = (string) $request->request->get('email', '');
-
+        $email = $request->request->get('email', '');
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 
         return new Passport(
             new UserBadge($email),
-            new PasswordCredentials((string) $request->request->get('password', '')),
+            new PasswordCredentials($request->request->get('password', '')),
             [
-                new CsrfTokenBadge('authenticate', (string) $request->request->get('_csrf_token', '')),
+                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token', '')),
                 new RememberMeBadge(),
             ]
         );
