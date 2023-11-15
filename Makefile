@@ -50,7 +50,26 @@ vendor: composer
 ## —— Symfony 🎵 ———————————————————————————————————————————————————————————————
 sf: ## List all Symfony commands or pass the parameter "c=" to run a given command, example: make sf c=about
 	@$(eval c ?=)
-	@$(SYMFONY) $(c)
+	@$(TESTS) $(c)
 
 cc: c=c:c ## Clear the cache
 cc: sf
+
+## —— Tests 🧙 ——————————————————————————————————————————————————————————————
+	app-tests:
+	$(PHP) bin/phpunit tests/ -c phpunit.xml.dist --debug
+
+fix-permissions:
+	sudo chmod -R g+w $(CURDIR) -R
+	sudo chown :www-data $(CURDIR) -R
+	sudo chmod a+rwX $(CURDIR) -R
+
+
+## —— Test DB 🧙 ——————————————————————————————————————————————————————————————
+db-test-build:
+	$(SYMFONY) d:d:d --env=test --force --no-interaction
+	$(SYMFONY) d:d:c --env=test
+	$(SYMFONY) d:s:u --env=test --force
+	$(SYMFONY) d:f:l --env=test --no-interaction
+psalm:
+	$(PHP_CONT) vendor/bin/psalm psalm.xml  --no-cache

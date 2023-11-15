@@ -67,3 +67,8 @@ Symfony Docker is available under the MIT License.
 ## Credits
 
 Created by [Kévin Dunglas](https://dunglas.fr), co-maintained by [Maxime Helias](https://twitter.com/maxhelias) and sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
+
+
+Tests:
+1. Create test database and load fixtures `make db-test-build`
+2. Run tests `make app-tests`
