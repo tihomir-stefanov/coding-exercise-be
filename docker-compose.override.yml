@@ -19,8 +19,7 @@ services:
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
-    depends_on:
-      - adminer
+
   caddy:
     command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch" ]
     build:
@@ -31,10 +30,7 @@ services:
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     environment:
       MERCURE_EXTRA_DIRECTIVES: demo
-  adminer:
-    image: adminer
-    ports:
-      - 8080:8080
+
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
 
